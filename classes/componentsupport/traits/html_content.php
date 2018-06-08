@@ -162,6 +162,30 @@ trait html_content {
         return true;
     }
 
+    protected function get_intro_html_content_items(int $courseid): array {
+        global $DB;
+
+        if (!$this->module_installed()) {
+            return [];
+        }
+
+        $array = [];
+
+        $compname = $this->get_component_name();
+
+        $select = "course = ? AND introformat = ? AND intro !=''";
+        $rs = $DB->get_recordset_select($compname, $select, [$courseid, FORMAT_HTML]);
+        foreach ($rs as $row) {
+            $array[] = new component(
+                $row->id, $compname, $compname, 'intro', $courseid, $row->timemodified,
+                $row->introformat, $row->name);
+        }
+        $rs->close();
+
+        return $array;
+    }
+
+
     /**
      * @param string $module
      * @param int $id

@@ -126,39 +126,12 @@ SQL;
         return $array;
     }
 
-    /**
-     * Get forum intro content items.
-     * @param int $courseid
-     * @return array
-     * @throws \dml_exception
-     */
-    private function get_forum_intro_html_content_items($courseid) {
-        global $DB;
-
-        if (!$this->module_installed()) {
-            return [];
-        }
-
-        $array = [];
-
-        $select = "course = ? AND introformat = ? AND intro !=''";
-        $rs = $DB->get_recordset_select($this->type, $select, [$courseid, FORMAT_HTML]);
-        foreach ($rs as $row) {
-            $array[] = new component(
-                $row->id, $this->type, $this->type, 'intro', $courseid, $row->timemodified,
-                $row->introformat, $row->name);
-        }
-        $rs->close();
-
-        return $array;
-    }
-
     public function get_course_html_content_items($courseid) {
         if (!$this->module_installed()) {
             return [];
         }
 
-        $introarray = $this->get_forum_intro_html_content_items($courseid);
+        $introarray = $this->get_intro_html_content_items($courseid);
         $discussionarray = $this->get_discussion_html_content_items($courseid);
 
         return array_merge($introarray, $discussionarray);
@@ -180,7 +153,7 @@ SQL;
             }
             $contentitems = $this->get_discussion_html_content_items($courseid, $params['d']);
         } else {
-            $contentitems = $this->get_forum_intro_html_content_items($courseid);
+            $contentitems = $this->get_intro_html_content_items($courseid);
         }
 
         $posts = [];
