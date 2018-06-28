@@ -208,6 +208,7 @@ SQL;
                 return [];
             }
             $contentitems = $this->get_entry_html_content_items($courseid, $glossaryid);
+            $contentitems = array_merge($contentitems, $this->get_intro_html_content_items($courseid));
         } else {
             $contentitems = $this->get_intro_html_content_items($courseid);
         }
