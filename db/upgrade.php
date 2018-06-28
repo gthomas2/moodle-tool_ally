@@ -145,6 +145,29 @@ function xmldb_tool_ally_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2017120822, 'tool', 'ally');
     }
 
+    if ($oldversion < 2017120824) {
+
+        // Define field attempts to be added to tool_ally_content_queue.
+        $table = new xmldb_table('tool_ally_content_queue');
+
+        $field = new xmldb_field('content', XMLDB_TYPE_TEXT, null, null, XMLDB_NOTNULL, null, null, 'eventname');
+
+        // Conditionally launch add field content.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        $field = new xmldb_field('attempts', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, '0', 'content');
+
+        // Conditionally launch add field attempts.
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Ally savepoint reached.
+        upgrade_plugin_savepoint(true, 2017120824, 'tool', 'ally');
+    }
+
 
     return true;
 }
